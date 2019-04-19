@@ -54,7 +54,7 @@ public class Main {
 
 	public static void deleteCabinet(Connection conn, int cabinetId) {
 		// Delete Cabinet from List
-		// Delete all connected Devices first, then delete Cabinet
+		// Delete all connected Devices first
 		try {
 			String query = "DELETE FROM DEVICES WHERE CABINETID = " + cabinetId;
 			Statement m_Statement = conn.createStatement();
@@ -62,7 +62,7 @@ public class Main {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+		// Delete the Cabinet
 		try {
 			String query = "DELETE FROM CABINETS WHERE CABINETID = " + cabinetId;
 			Statement m_Statement = conn.createStatement();
@@ -74,18 +74,50 @@ public class Main {
 
 	public static void adddevice(Connection conn, int deviceId, int cabinetId) {
 		// Add device to Cabinet
+		try {
+			String query = "UPDATE DEVICES SET CABINETID = " + cabinetId + "WHERE deviceId = " + deviceId;
+			Statement m_Statement = conn.createStatement();
+			m_Statement.executeUpdate(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		// TODO Create device positioning in Cabinet
 		
+		//Increment Number of devices in Cabinet
+		try {
+			String query = "UPDATE CABINETS SET NUMBEROFDEVICES = NUMBEROFDEVICES + 1 WHERE CABINETID = " + cabinetId;
+			Statement m_Statement = conn.createStatement();
+			m_Statement.executeUpdate(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void removedevice(Connection conn, int deviceId) {
+		// Subtract removed device from number of devices in Cabinet
+		try {
+			String query = "UPDATE CABINETS a INNER JOIN DEVICES b ON b.CABINETID = a.CABINETID SET a.NUMBEROFDEVICES = NUMBEROFDEVICES - 1";
+			Statement m_Statement = conn.createStatement();
+			m_Statement.executeUpdate(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		// TODO Free device Position in Cabinet
 		// Remove device from Cabinet
+		try {
+			String query = "UPDATE DEVICES SET CABINETID = null WHERE deviceId = " + deviceId;
+			Statement m_Statement = conn.createStatement();
+			m_Statement.executeUpdate(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
 	}
 
 	public static void getcabinets(Connection conn) {
 		// List all Cabinets
-		String query = "SELECT * FROM CABINETS";
 		try {
+			String query = "SELECT * FROM CABINETS";
 			Statement m_Statement = conn.createStatement();
 			ResultSet m_ResultSet = m_Statement.executeQuery(query);
 			System.out.println("Width \t Height \t Number of devices \t ID");
@@ -98,8 +130,33 @@ public class Main {
 		}
 	}
 
-	public static void CabinetDetail(Connection conn) {
+	public static void CabinetDetail(Connection conn, int cabinetId) {
 		// Get details of one Cabinet
+		try {
+			String query = "SELECT * FROM CABINETS WHERE CABINETID = " + cabinetId;
+			Statement m_Statement = conn.createStatement();
+			ResultSet m_ResultSet = m_Statement.executeQuery(query);
+			System.out.println("Width \t Height \t Number of devices \t ID");
+			while (m_ResultSet.next()) {
+				System.out.println(m_ResultSet.getString(1) + "\t" + m_ResultSet.getString(2) + "\t\t\t"
+						+ m_ResultSet.getString(3) + "\t\t" + m_ResultSet.getString(4));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// Get details of installed devices
+		try {
+			String query = "SELECT * FROM DEVICES WHERE CABINETID = " + cabinetId;
+			Statement m_Statement = conn.createStatement();
+			ResultSet m_ResultSet = m_Statement.executeQuery(query);
+			System.out.println("Width \t Height \t XPosition \t YPosition \t ID");
+			while (m_ResultSet.next()) {
+				System.out.println(m_ResultSet.getString(1) + "\t" + m_ResultSet.getString(2) + "\t\t\t"
+						+ m_ResultSet.getString(3) + "\t\t" + m_ResultSet.getString(4) + "\t\t" + m_ResultSet.getString(5));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void showFunctions() {
@@ -111,6 +168,7 @@ public class Main {
 		System.out.println("5. List all Cabinets");
 		System.out.println("6. Delete Cabinet");
 		System.out.println("7. Detailed View of one Cabinet");
+		System.out.println("8. Exit");
 	}
 
 	public static void main(String[] args) throws Exception {

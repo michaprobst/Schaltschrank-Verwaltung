@@ -8,14 +8,15 @@ import java.util.Arrays;
 
 public class PositioningSystem {
 
-	public static int[] findPosition(Connection conn, int cabinetId, int deviceId, int newdeviceHeight, int newdeviceWidth) {
+	public static int[] findPosition(Connection conn, int cabinetId, int deviceId, int newdeviceHeight,
+			int newdeviceWidth) {
 
 		try {
 			int cabinetWidth;
 			int cabinetHeight;
 			int deviceXPosition;
 			int deviceYPosition;
-			
+
 			// Get Height and Width of Cabinet
 			Statement m_Statement;
 			m_Statement = conn.createStatement();
@@ -25,39 +26,38 @@ public class PositioningSystem {
 			cabinetHeight = Integer.parseInt(m_ResultSet.getString(1));
 			cabinetWidth = Integer.parseInt(m_ResultSet.getString(2));
 
-			int[][] cabinetSlots = new int[cabinetWidth][cabinetHeight];
+			int[][] cabinetSlots = new int[cabinetHeight][cabinetWidth];
 			for (int row[] : cabinetSlots)
 				Arrays.fill(row, 0);
 
 			// Get Height, Width and position of all devices in the Cabinet
 			m_Statement = conn.createStatement();
-			query = "SELECT XPOSITION, YPOSITION, HEIGHT, WIDTH FROM DEVICES WHERE CABINETID = " + cabinetId;
+			query = "SELECT XPOSITION, YPOSITION, HEIGHT, WIDTH, DEVICEID FROM DEVICES WHERE CABINETID = " + cabinetId;
 			m_ResultSet = m_Statement.executeQuery(query);
 			while (m_ResultSet.next()) {
 				int existingdeviceHeight = Integer.parseInt(m_ResultSet.getString(3));
 				int existingdeviceWidth = Integer.parseInt(m_ResultSet.getString(4));
+				int existingdeviceId = Integer.parseInt(m_ResultSet.getString(5));
 				deviceXPosition = Integer.parseInt(m_ResultSet.getString(1));
 				deviceYPosition = Integer.parseInt(m_ResultSet.getString(2));
-				cabinetSlots[deviceXPosition][deviceYPosition] = deviceId;
+				cabinetSlots[deviceYPosition][deviceXPosition] = deviceId;
 				for (int i = 0; i < existingdeviceHeight; i++) {
 					for (int j = 0; j < existingdeviceWidth; j++) {
-						cabinetSlots[deviceYPosition + i][deviceXPosition + j] = deviceId;
+						cabinetSlots[deviceYPosition + i][deviceXPosition + j] = existingdeviceId;
 					}
 				}
 			}
-			for (int row = 0; row < cabinetSlots.length; row++) {
-				for (int column = 0; column < cabinetSlots[row].length; column++) {
-					for (int col = 0; col < cabinetSlots[row].length; col++) {
-						System.out.printf("%4d", cabinetSlots[row][col]);
-					}
-					System.out.println();
+			// Print current layout of cabinet
+			for (int row = 0; row < cabinetHeight; row++) {
+				for (int column = 0; column < cabinetWidth; column++) {
+					System.out.printf("%4d", cabinetSlots[row][column]);
 				}
+				System.out.println();
 			}
-			// Add new device to a free position in cabinet
 
-			// Find free Position
-			for (int i = 0; i < cabinetHeight - newdeviceHeight; i++) {
-				for (int j = 0; j < cabinetWidth - newdeviceWidth; j++) {
+			// Find free Position for new device
+			for (int i = 0; i <= cabinetHeight - newdeviceHeight; i++) {
+				for (int j = 0; j <= cabinetWidth - newdeviceWidth; j++) {
 					if (cabinetSlots[i][j] == 0) {
 						// Check if device fits into found slot
 						int k = 0, l = 0;

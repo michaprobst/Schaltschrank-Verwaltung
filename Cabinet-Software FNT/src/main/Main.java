@@ -12,15 +12,31 @@ public class Main {
 	public static void createdevice(Connection conn, int height, int width, int cabinetId) {
 		// Create new Device
 		try {
-			String query = "INSERT INTO DEVICES (HEIGHT, WIDTH, CABINETID) VALUES (" + height + ", " + width + ", "
-					+ cabinetId + ")";
+			// Create new device-entry with height and width
+			String query = "INSERT INTO DEVICES (HEIGHT, WIDTH) VALUES (" + height + ", " + width + ", " + ")";
 			Statement m_Statement = conn.createStatement();
 			m_Statement.executeUpdate(query);
 			String query2 = "SELECT MAX(DEVICEID) FROM DEVICES";
 			ResultSet m_ResultSet = m_Statement.executeQuery(query2);
 			m_ResultSet.next();
 			System.out.println("New device created with ID: " + m_ResultSet.getString(1));
-			addDevice(conn, cabinetId, Integer.parseInt(m_ResultSet.getString(1)), height, width);
+			int deviceId = Integer.parseInt(m_ResultSet.getString(1));
+
+			// Check for valid Position in Cabinet
+			int[] position = PositioningSystem.findPosition(conn, cabinetId, deviceId, height, width);
+			if (position == null) {
+				System.out.println("No fitting Position for device found. Device has not been created.");
+			} else {
+				query = "UPDATE DEVICES SET CABINETID = " + cabinetId + ", XPOSITION = " + position[1]
+						+ ", YPOSITION = " + position[0] + "WHERE deviceId = " + deviceId;
+				m_Statement = conn.createStatement();
+				m_Statement.executeUpdate(query);
+
+				// Increment Number of devices in Cabinet
+				query = "UPDATE CABINETS SET NUMBEROFDEVICES = NUMBEROFDEVICES + 1 WHERE CABINETID = " + cabinetId;
+				m_Statement = conn.createStatement();
+				m_Statement.executeUpdate(query);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -39,7 +55,7 @@ public class Main {
 			m_Statement = conn.createStatement();
 			ResultSet m_ResultSet = m_Statement.executeQuery(query2);
 			m_ResultSet.next();
-			System.out.println("New Cabinet created with ID" + m_ResultSet.getInt(1));
+			System.out.println("New Cabinet created with ID" + m_ResultSet.getString(1));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -57,28 +73,6 @@ public class Main {
 			query = "DELETE FROM CABINETS WHERE CABINETID = " + cabinetId;
 			m_Statement = conn.createStatement();
 			m_Statement.executeUpdate(query);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public static void addDevice(Connection conn, int deviceId, int cabinetId, int height, int width) {
-		// Add device to Cabinet
-		try {
-			int[] position = PositioningSystem.findPosition(conn, deviceId, cabinetId, height, width);
-			if (position == null) {
-				System.out.println("No fitting Position for device found. Device has not been created.");
-			} else {
-				String query = "UPDATE DEVICES SET CABINETID = " + cabinetId + ", XPOSITION = " + position[1]
-						+ ", YPOSITION = " + position[0] + "WHERE deviceId = " + deviceId;
-				Statement m_Statement = conn.createStatement();
-				m_Statement.executeUpdate(query);
-
-				// Increment Number of devices in Cabinet
-				query = "UPDATE CABINETS SET NUMBEROFDEVICES = NUMBEROFDEVICES + 1 WHERE CABINETID = " + cabinetId;
-				m_Statement = conn.createStatement();
-				m_Statement.executeUpdate(query);
-			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -107,10 +101,10 @@ public class Main {
 			String query = "SELECT * FROM CABINETS";
 			Statement m_Statement = conn.createStatement();
 			ResultSet m_ResultSet = m_Statement.executeQuery(query);
-			System.out.println("ID \t Height \t Width \t Number of devices");
+			System.out.println(String.format("%s %10s %10s %10s", "ID", "Height", "Width", "Devices"));
 			while (m_ResultSet.next()) {
-				System.out.println(m_ResultSet.getString(1) + "\t" + m_ResultSet.getString(2) + "\t\t\t"
-						+ m_ResultSet.getString(3) + "\t\t" + m_ResultSet.getString(4));
+				System.out.println(String.format("%s %10s %10s %10s", m_ResultSet.getString(1),
+						m_ResultSet.getString(2), m_ResultSet.getString(3), m_ResultSet.getString(4)));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -123,22 +117,32 @@ public class Main {
 			String query = "SELECT * FROM CABINETS WHERE CABINETID = " + cabinetId;
 			Statement m_Statement = conn.createStatement();
 			ResultSet m_ResultSet = m_Statement.executeQuery(query);
-			System.out.println("ID \t Height \t Width \t Number of devices");
-			while (m_ResultSet.next()) {
-				System.out.println(m_ResultSet.getString(1) + "\t" + m_ResultSet.getString(2) + "\t\t\t"
-						+ m_ResultSet.getString(3) + "\t\t" + m_ResultSet.getString(4));
+			System.out.println(String.format("%s %10s %10s %10s", "ID", "Height", "Width", "Devices"));
+			if (m_ResultSet.wasNull()) {
+				System.out.println("No Cabinet with this ID found: " + cabinetId);
+			} else {
+				while (m_ResultSet.next()) {
+					System.out.println(String.format("%s %10s %10s %10s", m_ResultSet.getString(1),
+							m_ResultSet.getString(2), m_ResultSet.getString(3), m_ResultSet.getString(4)));
+				}
 			}
 
 			// Get details of installed devices
 
 			query = "SELECT * FROM DEVICES WHERE CABINETID = " + cabinetId;
 			m_Statement = conn.createStatement();
-			m_ResultSet = m_Statement.executeQuery(query);
-			System.out.println("Width \t Height \t XPosition \t YPosition \t ID");
-			while (m_ResultSet.next()) {
+			if (m_ResultSet.wasNull()) {
+				System.out.println("No connected devices.");
+			} else {
+				m_ResultSet = m_Statement.executeQuery(query);
+				System.out.println("Connected Devices:");
 				System.out.println(
-						m_ResultSet.getString(1) + "\t" + m_ResultSet.getString(2) + "\t\t\t" + m_ResultSet.getString(3)
-								+ "\t\t" + m_ResultSet.getString(4) + "\t\t" + m_ResultSet.getString(5));
+						String.format("%s %10s %10s %10s %7s", "Width", "Height", "XPosition", "YPosition", "ID"));
+				while (m_ResultSet.next()) {
+					System.out.println(
+							String.format("%s %10s %10s %10s %10s", m_ResultSet.getString(1), m_ResultSet.getString(2),
+									m_ResultSet.getString(3), m_ResultSet.getString(4), m_ResultSet.getString(5)));
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -170,11 +174,11 @@ public class Main {
 			showFunctions();
 
 			while (true) {
-				String n = reader.nextLine();
+				int n = reader.nextInt();
 				// Scans the next token of the input as an int.
 				// once finished
 				switch (n) {
-				case "1":
+				case 1:
 					System.out.println("Creating new Cabinet");
 					System.out.println("Insert Height");
 					height = reader.nextInt();
@@ -190,7 +194,7 @@ public class Main {
 					}
 					createcabinet(conn, height, width);
 					break;
-				case "2":
+				case 2:
 					System.out.println("Creating new Device");
 					System.out.println("Insert Height");
 					height = reader.nextInt();
@@ -209,26 +213,26 @@ public class Main {
 					System.out.println("Creating device...");
 					createdevice(conn, height, width, cabinetId);
 					break;
-				case "3":
+				case 3:
 					System.out.println("Enter Id of Cabinet you wish to delete:");
 					cabinetId = reader.nextInt();
 					deleteCabinet(conn, cabinetId);
 					break;
-				case "4":
+				case 4:
 					System.out.println("Enter Id of Device you wish to delete:");
 					int deviceId = reader.nextInt();
 					deleteDevice(conn, deviceId);
 					break;
-				case "5":
+				case 5:
 					System.out.println("Listing all Cabinets:");
 					getCabinets(conn);
 					break;
-				case "6":
+				case 6:
 					System.out.println("Enter CabinetId");
 					cabinetId = reader.nextInt();
 					CabinetDetail(conn, cabinetId);
 					break;
-				case "7":
+				case 7:
 					// Exit-Function
 					System.out.println("Exiting...");
 					reader.close();

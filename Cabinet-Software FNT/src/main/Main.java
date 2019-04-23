@@ -31,11 +31,6 @@ public class Main {
 						+ ", YPOSITION = " + position[0] + "WHERE deviceId = " + deviceId;
 				m_Statement = conn.createStatement();
 				m_Statement.executeUpdate(query);
-
-				// Increment Number of devices in Cabinet
-				query = "UPDATE CABINETS SET NUMBEROFDEVICES = NUMBEROFDEVICES + 1 WHERE CABINETID = " + cabinetId;
-				m_Statement = conn.createStatement();
-				m_Statement.executeUpdate(query);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -45,8 +40,7 @@ public class Main {
 
 	public static void createcabinet(Connection conn, int height, int width) {
 		// Create new Cabinet
-		String query = "INSERT INTO CABINETS (HEIGHT, WIDTH, NUMBEROFDEVICES) VALUES (" + height + ", " + width + ", "
-				+ "0" + ")";
+		String query = "INSERT INTO CABINETS (HEIGHT, WIDTH) VALUES (" + height + ", " + width + ")";
 		try {
 			Statement m_Statement = conn.createStatement();
 			m_Statement.executeUpdate(query);
@@ -73,6 +67,7 @@ public class Main {
 			query = "DELETE FROM CABINETS WHERE CABINETID = " + cabinetId;
 			m_Statement = conn.createStatement();
 			m_Statement.executeUpdate(query);
+			System.out.println("Cabinet successfully deleted.");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -80,15 +75,18 @@ public class Main {
 
 	public static void deleteDevice(Connection conn, int deviceId) {
 		try {
-			// Subtract removed device from number of devices in Cabinet
-			String query = "UPDATE CABINETS a INNER JOIN DEVICES b ON b.CABINETID = a.CABINETID SET a.NUMBEROFDEVICES = NUMBEROFDEVICES - 1";
-			Statement m_Statement = conn.createStatement();
-			m_Statement.executeUpdate(query);
-
 			// Remove device from Cabinet
-			query = "DELETE FROM DEVICES WHERE DEVICEID = " + deviceId;
-			m_Statement = conn.createStatement();
-			m_Statement.executeUpdate(query);
+			String query = "DELETE FROM DEVICES WHERE DEVICEID = " + deviceId;
+			Statement m_Statement = conn.createStatement();
+			if (m_Statement.executeUpdate(query) == 0) {
+				System.out.println("No Device with that ID found.");
+			}
+			if (m_Statement.executeUpdate(query) >= 1) {
+				System.out.println("Multiple Lines affected?");
+			}
+			if (m_Statement.executeUpdate(query) == 1) {
+				System.out.println("Device successfully deleted.");
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -101,10 +99,10 @@ public class Main {
 			String query = "SELECT * FROM CABINETS";
 			Statement m_Statement = conn.createStatement();
 			ResultSet m_ResultSet = m_Statement.executeQuery(query);
-			System.out.println(String.format("%s %10s %10s %10s", "ID", "Height", "Width", "Devices"));
+			System.out.println(String.format("%s %10s %10s", "ID", "Height", "Width"));
 			while (m_ResultSet.next()) {
-				System.out.println(String.format("%s %10s %10s %10s", m_ResultSet.getString(1),
-						m_ResultSet.getString(2), m_ResultSet.getString(3), m_ResultSet.getString(4)));
+				System.out.println(String.format("%s %10s %10s", m_ResultSet.getString(1), m_ResultSet.getString(2),
+						m_ResultSet.getString(3)));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -117,32 +115,37 @@ public class Main {
 			String query = "SELECT * FROM CABINETS WHERE CABINETID = " + cabinetId;
 			Statement m_Statement = conn.createStatement();
 			ResultSet m_ResultSet = m_Statement.executeQuery(query);
+			String query2 = "SELECT COUNT(*) FROM DEVICES WHERE CABINETID = " + cabinetId;
+			Statement m_Statement2 = conn.createStatement();
+			ResultSet m_ResultSet2 = m_Statement2.executeQuery(query2);
+			m_ResultSet2.next();
 			System.out.println(String.format("%s %10s %10s %10s", "ID", "Height", "Width", "Devices"));
 			if (m_ResultSet.wasNull()) {
 				System.out.println("No Cabinet with this ID found: " + cabinetId);
 			} else {
 				while (m_ResultSet.next()) {
 					System.out.println(String.format("%s %10s %10s %10s", m_ResultSet.getString(1),
-							m_ResultSet.getString(2), m_ResultSet.getString(3), m_ResultSet.getString(4)));
+							m_ResultSet.getString(2), m_ResultSet.getString(3), m_ResultSet2.getString(1)));
 				}
 			}
 
 			// Get details of installed devices
 
-			query = "SELECT * FROM DEVICES WHERE CABINETID = " + cabinetId;
+			query = "SELECT WIDTH, HEIGHT, XPOSITION, YPOSITION, DEVICEID FROM DEVICES WHERE CABINETID = " + cabinetId;
 			m_Statement = conn.createStatement();
-			if (m_ResultSet.wasNull()) {
+			m_ResultSet = m_Statement.executeQuery(query);
+			if (m_ResultSet.next() == false) {
 				System.out.println("No connected devices.");
 			} else {
-				m_ResultSet = m_Statement.executeQuery(query);
 				System.out.println("Connected Devices:");
 				System.out.println(
-						String.format("%s %10s %10s %10s %7s", "Width", "Height", "XPosition", "YPosition", "ID"));
-				while (m_ResultSet.next()) {
+						String.format("%s %10s %10s %10s %5s", "Width", "Height", "XPosition", "YPosition", "ID"));
+				do {
 					System.out.println(
 							String.format("%s %10s %10s %10s %10s", m_ResultSet.getString(1), m_ResultSet.getString(2),
 									m_ResultSet.getString(3), m_ResultSet.getString(4), m_ResultSet.getString(5)));
 				}
+				while (m_ResultSet.next());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -62,8 +62,8 @@ public class PositioningSystem {
 						// Check if device fits into found slot
 						int k = 0, l = 0;
 						boolean flag = true;
-						for (k = 0; k < i + newdeviceHeight && flag; k++) {
-							for (l = 0; l < j + newdeviceWidth && flag; l++) {
+						for (k = i; k < i + newdeviceHeight && flag; k++) {
+							for (l = j; l < j + newdeviceWidth && flag; l++) {
 								if (cabinetSlots[k][l] != 0)
 									flag = false;
 							}
@@ -72,6 +72,7 @@ public class PositioningSystem {
 							// Device fits into this slot
 							// Return position parameters
 							int[] position = { i, j };
+							System.out.println("Position found: {" + i + "}, {" + j + "}");
 							return position;
 						}
 					}

@@ -5,17 +5,19 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class PositioningSystem {
 
-	public static int[] findPosition(Connection conn, int cabinetId, int deviceId, int newdeviceHeight,
-			int newdeviceWidth) {
+	public static int[] findPosition(Connection conn, int cabinetId, int newdeviceHeight, int newdeviceWidth) {
 
 		try {
 			int cabinetWidth;
 			int cabinetHeight;
 			int deviceXPosition;
 			int deviceYPosition;
+			int[] firstPosition = {-1, -1};
+			int[] secondPosition = {-1, -1};
 
 			// Get Height and Width of Cabinet
 			Statement m_Statement;
@@ -40,7 +42,6 @@ public class PositioningSystem {
 				int existingdeviceId = Integer.parseInt(m_ResultSet.getString(5));
 				deviceXPosition = Integer.parseInt(m_ResultSet.getString(1));
 				deviceYPosition = Integer.parseInt(m_ResultSet.getString(2));
-				cabinetSlots[deviceYPosition][deviceXPosition] = deviceId;
 				for (int i = 0; i < existingdeviceHeight; i++) {
 					for (int j = 0; j < existingdeviceWidth; j++) {
 						cabinetSlots[deviceYPosition + i][deviceXPosition + j] = existingdeviceId;
@@ -70,13 +71,42 @@ public class PositioningSystem {
 						}
 						if (flag == true) {
 							// Device fits into this slot
-							// Return position parameters
-							int[] position = { i, j };
-							System.out.println("Position found: {" + i + "}, {" + j + "}");
-							return position;
+							if (j == 0 && firstPosition[0] == -1) {
+								System.out.println("Possible location found with x = 0: " + i + " " + j);
+								firstPosition[0] = i;
+								firstPosition[1] = j;
+							}
+							if (j != 0 && secondPosition[0] == -1) {
+								System.out.println("Possible location found with x > 0: " + i + " " + j);
+								secondPosition[0] = i;
+								secondPosition[1] = j;
+							}
 						}
 					}
 				}
+			}
+			if (firstPosition[0] != -1 && secondPosition[0] != -1) {
+				Scanner reader = new Scanner(System.in);
+				System.out.println("Choose device position:");
+				System.out.println("1. Position 1: {" + firstPosition[0] + " " + firstPosition[1] + "}");
+				System.out.println("2. Position 2: {" + secondPosition[0] + " " + secondPosition[1] + "}");
+				System.out.println("3. Abort");
+				int n = reader.nextInt();
+				switch(n) {
+				case 1: 
+					return firstPosition;
+				case 2: 
+					return secondPosition;
+				case 3: 
+					return null;
+				default: System.out.println("Choose number 1 to 3.");
+				}
+			}
+			else if(firstPosition[0] != -1) {
+				return firstPosition;
+			}
+			else if(secondPosition[0] != -1) {
+				return secondPosition;
 			}
 			// No valid Position has been found
 			return null;

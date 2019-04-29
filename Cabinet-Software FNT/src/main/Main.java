@@ -145,16 +145,6 @@ public class Main {
 				if (m_ResultSet.next() == false) {
 					System.out.println("No connected devices.");
 				} else {
-					int existingdeviceHeight = Integer.parseInt(m_ResultSet.getString(2));
-					int existingdeviceWidth = Integer.parseInt(m_ResultSet.getString(1));
-					int existingdeviceId = Integer.parseInt(m_ResultSet.getString(5));
-					int deviceXPosition = Integer.parseInt(m_ResultSet.getString(3));
-					int deviceYPosition = Integer.parseInt(m_ResultSet.getString(4));
-					for (int i = 0; i < existingdeviceHeight; i++) {
-						for (int j = 0; j < existingdeviceWidth; j++) {
-							cabinetSlots[deviceYPosition + i][deviceXPosition + j] = existingdeviceId;
-						}
-					}
 					System.out.println("Connected Devices:");
 					System.out.println(String.format("%s %10s %10s %10s %5s", "Width", "Height", "XPosition",
 							"YPosition", "ID"));
@@ -162,8 +152,19 @@ public class Main {
 						System.out.println(String.format("%s %10s %10s %10s %10s", m_ResultSet.getString(1),
 								m_ResultSet.getString(2), m_ResultSet.getString(3), m_ResultSet.getString(4),
 								m_ResultSet.getString(5)));
+						int existingdeviceHeight = Integer.parseInt(m_ResultSet.getString(2));
+						int existingdeviceWidth = Integer.parseInt(m_ResultSet.getString(1));
+						int existingdeviceId = Integer.parseInt(m_ResultSet.getString(5));
+						int deviceXPosition = Integer.parseInt(m_ResultSet.getString(3));
+						int deviceYPosition = Integer.parseInt(m_ResultSet.getString(4));
+						for (int i = 0; i < existingdeviceHeight; i++) {
+							for (int j = 0; j < existingdeviceWidth; j++) {
+								cabinetSlots[deviceYPosition + i][deviceXPosition + j] = existingdeviceId;
+							}
+						}
 					} while (m_ResultSet.next());
-					//Print current diagramm of devices
+
+					// Print current diagramm of devices
 					System.out.println("Current positions of devices:");
 					for (int row = 0; row < cabinetHeight; row++) {
 						for (int column = 0; column < cabinetWidth; column++) {

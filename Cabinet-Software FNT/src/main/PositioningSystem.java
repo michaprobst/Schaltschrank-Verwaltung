@@ -72,12 +72,12 @@ public class PositioningSystem {
 						if (flag == true) {
 							// Device fits into this slot
 							if (j == 0 && firstPosition[0] == -1) {
-								System.out.println("Possible location found with x = 0: " + i + " " + j);
+								System.out.println("Possible position 1 found with x = 0: " + i + " " + j);
 								firstPosition[0] = i;
 								firstPosition[1] = j;
 							}
 							if (j != 0 && secondPosition[0] == -1) {
-								System.out.println("Possible location found with x > 0: " + i + " " + j);
+								System.out.println("Possible position 2 found with x > 0: " + i + " " + j);
 								secondPosition[0] = i;
 								secondPosition[1] = j;
 							}
@@ -85,7 +85,7 @@ public class PositioningSystem {
 					}
 				}
 			}
-			if (firstPosition[0] != -1 && secondPosition[0] != -1) {
+			if (firstPosition[0] != -1 && secondPosition[0] != -1 && firstPosition[0] != secondPosition[0]) {
 				Scanner reader = new Scanner(System.in);
 				System.out.println("Choose device position:");
 				System.out.println("1. Position 1: {" + firstPosition[0] + " " + firstPosition[1] + "}");
@@ -93,9 +93,11 @@ public class PositioningSystem {
 				System.out.println("3. Abort");
 				int n = reader.nextInt();
 				switch(n) {
-				case 1: 
+				case 1:
+					System.out.println("Inserting at Position 1");
 					return firstPosition;
 				case 2: 
+					System.out.println("Inserting at Position 2");
 					return secondPosition;
 				case 3: 
 					return null;
@@ -103,9 +105,11 @@ public class PositioningSystem {
 				}
 			}
 			else if(firstPosition[0] != -1) {
+				System.out.println("Inserting at Position 1");
 				return firstPosition;
 			}
 			else if(secondPosition[0] != -1) {
+				System.out.println("Inserting at Position 2");
 				return secondPosition;
 			}
 			// No valid Position has been found

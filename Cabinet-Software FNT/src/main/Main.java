@@ -115,6 +115,9 @@ public class Main {
 	public static void cabinetDetail(Connection conn, int cabinetId) {
 		// Get details of one Cabinet
 		try {
+			int[][] cabinetSlots = null;
+			int cabinetWidth = 0;
+			int cabinetHeight = 0;
 			String query = "SELECT * FROM CABINETS WHERE CABINETID = " + cabinetId;
 			Statement m_Statement = conn.createStatement();
 			ResultSet m_ResultSet = m_Statement.executeQuery(query);
@@ -122,31 +125,53 @@ public class Main {
 			Statement m_Statement2 = conn.createStatement();
 			ResultSet m_ResultSet2 = m_Statement2.executeQuery(query2);
 			m_ResultSet2.next();
-			System.out.println(String.format("%s %10s %10s %10s", "ID", "Height", "Width", "Devices"));
-			if (m_ResultSet.wasNull()) {
+			if (m_ResultSet.next() == false) {
 				System.out.println("No Cabinet with this ID found: " + cabinetId);
 			} else {
-				while (m_ResultSet.next()) {
+				do {
+					cabinetWidth = Integer.parseInt(m_ResultSet.getString(3));
+					cabinetHeight = Integer.parseInt(m_ResultSet.getString(2));
+					cabinetSlots = new int[cabinetHeight][cabinetWidth];
+					System.out.println(String.format("%s %10s %10s %10s", "ID", "Height", "Width", "Devices"));
 					System.out.println(String.format("%s %10s %10s %10s", m_ResultSet.getString(1),
 							m_ResultSet.getString(2), m_ResultSet.getString(3), m_ResultSet2.getString(1)));
-				}
-			}
-
-			// Get details of installed devices
-			query = "SELECT WIDTH, HEIGHT, XPOSITION, YPOSITION, DEVICEID FROM DEVICES WHERE CABINETID = " + cabinetId;
-			m_Statement = conn.createStatement();
-			m_ResultSet = m_Statement.executeQuery(query);
-			if (m_ResultSet.next() == false) {
-				System.out.println("No connected devices.");
-			} else {
-				System.out.println("Connected Devices:");
-				System.out.println(
-						String.format("%s %10s %10s %10s %5s", "Width", "Height", "XPosition", "YPosition", "ID"));
-				do {
-					System.out.println(
-							String.format("%s %10s %10s %10s %10s", m_ResultSet.getString(1), m_ResultSet.getString(2),
-									m_ResultSet.getString(3), m_ResultSet.getString(4), m_ResultSet.getString(5)));
 				} while (m_ResultSet.next());
+
+				// Get details of installed devices and create diagram of cabinet
+				query = "SELECT WIDTH, HEIGHT, XPOSITION, YPOSITION, DEVICEID FROM DEVICES WHERE CABINETID = "
+						+ cabinetId;
+				m_Statement = conn.createStatement();
+				m_ResultSet = m_Statement.executeQuery(query);
+				if (m_ResultSet.next() == false) {
+					System.out.println("No connected devices.");
+				} else {
+					int existingdeviceHeight = Integer.parseInt(m_ResultSet.getString(2));
+					int existingdeviceWidth = Integer.parseInt(m_ResultSet.getString(1));
+					int existingdeviceId = Integer.parseInt(m_ResultSet.getString(5));
+					int deviceXPosition = Integer.parseInt(m_ResultSet.getString(3));
+					int deviceYPosition = Integer.parseInt(m_ResultSet.getString(4));
+					for (int i = 0; i < existingdeviceHeight; i++) {
+						for (int j = 0; j < existingdeviceWidth; j++) {
+							cabinetSlots[deviceYPosition + i][deviceXPosition + j] = existingdeviceId;
+						}
+					}
+					System.out.println("Connected Devices:");
+					System.out.println(String.format("%s %10s %10s %10s %5s", "Width", "Height", "XPosition",
+							"YPosition", "ID"));
+					do {
+						System.out.println(String.format("%s %10s %10s %10s %10s", m_ResultSet.getString(1),
+								m_ResultSet.getString(2), m_ResultSet.getString(3), m_ResultSet.getString(4),
+								m_ResultSet.getString(5)));
+					} while (m_ResultSet.next());
+					//Print current diagramm of devices
+					System.out.println("Current positions of devices:");
+					for (int row = 0; row < cabinetHeight; row++) {
+						for (int column = 0; column < cabinetWidth; column++) {
+							System.out.printf("%4d", cabinetSlots[row][column]);
+						}
+						System.out.println();
+					}
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

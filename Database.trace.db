@@ -2430,3 +2430,130 @@ Invalid value "4" for parameter "columnIndex" [90008-199]
 	at org.h2.jdbc.JdbcResultSet.getString(JdbcResultSet.java:296)
 	at cabinets/main.Main.cabinetDetail(Main.java:133)
 	at cabinets/main.Main.main(Main.java:262)
+2019-04-29 17:17:27 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Keine Daten verfügbar
+No data is available [2000-199]
+2019-04-30 14:12:54 database: flush
+org.h2.message.DbException: Allgemeiner Fehler: "java.lang.IllegalStateException: The file is locked: nio:D:/Dokumente/Bewerbungen/Bewerbungen Job1/FNT/Projekt/Database.mv.db [1.4.199/7]"
+General error: "java.lang.IllegalStateException: The file is locked: nio:D:/Dokumente/Bewerbungen/Bewerbungen Job1/FNT/Projekt/Database.mv.db [1.4.199/7]" [50000-199]
+	at org.h2.message.DbException.get(DbException.java:194)
+	at org.h2.message.DbException.convert(DbException.java:347)
+	at org.h2.mvstore.db.MVTableEngine$1.uncaughtException(MVTableEngine.java:90)
+	at org.h2.mvstore.MVStore.handleException(MVStore.java:2787)
+	at org.h2.mvstore.MVStore.panic(MVStore.java:441)
+	at org.h2.mvstore.MVStore.<init>(MVStore.java:404)
+	at org.h2.mvstore.MVStore$Builder.open(MVStore.java:3343)
+	at org.h2.mvstore.db.MVTableEngine$Store.open(MVTableEngine.java:162)
+	at org.h2.mvstore.db.MVTableEngine.init(MVTableEngine.java:95)
+	at org.h2.engine.Database.getPageStore(Database.java:2739)
+	at org.h2.engine.Database.open(Database.java:769)
+	at org.h2.engine.Database.openDatabase(Database.java:319)
+	at org.h2.engine.Database.<init>(Database.java:313)
+	at org.h2.engine.Engine.openSession(Engine.java:69)
+	at org.h2.engine.Engine.openSession(Engine.java:201)
+	at org.h2.engine.Engine.createSessionAndValidate(Engine.java:178)
+	at org.h2.engine.Engine.createSession(Engine.java:161)
+	at org.h2.engine.Engine.createSession(Engine.java:31)
+	at org.h2.engine.SessionRemote.connectEmbeddedOrServer(SessionRemote.java:336)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:169)
+	at org.h2.jdbc.JdbcConnection.<init>(JdbcConnection.java:148)
+	at org.h2.Driver.connect(Driver.java:69)
+	at java.sql/java.sql.DriverManager.getConnection(Unknown Source)
+	at java.sql/java.sql.DriverManager.getConnection(Unknown Source)
+	at cabinets/main.Main.main(Main.java:187)
+Caused by: org.h2.jdbc.JdbcSQLNonTransientException: Allgemeiner Fehler: "java.lang.IllegalStateException: The file is locked: nio:D:/Dokumente/Bewerbungen/Bewerbungen Job1/FNT/Projekt/Database.mv.db [1.4.199/7]"
+General error: "java.lang.IllegalStateException: The file is locked: nio:D:/Dokumente/Bewerbungen/Bewerbungen Job1/FNT/Projekt/Database.mv.db [1.4.199/7]" [50000-199]
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:502)
+	at org.h2.message.DbException.getJdbcSQLException(DbException.java:427)
+	... 25 more
+Caused by: java.lang.IllegalStateException: The file is locked: nio:D:/Dokumente/Bewerbungen/Bewerbungen Job1/FNT/Projekt/Database.mv.db [1.4.199/7]
+	at org.h2.mvstore.DataUtils.newIllegalStateException(DataUtils.java:883)
+	at org.h2.mvstore.FileStore.open(FileStore.java:172)
+	at org.h2.mvstore.MVStore.<init>(MVStore.java:390)
+	... 19 more
+2019-05-01 14:47:52 jdbc[7]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SELECT FROM CABINETS WHERE[*] CABINETID = -1"; erwartet "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"
+Syntax error in SQL statement "SELECT FROM CABINETS WHERE[*] CABINETID = -1"; expected "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"; SQL statement:
+SELECT FROM CABINETS WHERE CABINETID = -1 [42001-199]
+2019-05-01 14:47:52 jdbc[10]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Keine Daten verfügbar
+No data is available [2000-199]
+2019-05-01 14:47:52 jdbc[13]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Keine Daten verfügbar
+No data is available [2000-199]
+2019-05-01 16:59:31 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Keine Daten verfügbar
+No data is available [2000-199]
+2019-05-01 16:59:31 jdbc[6]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Keine Daten verfügbar
+No data is available [2000-199]
+2019-05-01 16:59:31 jdbc[10]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SELECT FROM CABINETS WHERE[*] CABINETID = -1"; erwartet "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"
+Syntax error in SQL statement "SELECT FROM CABINETS WHERE[*] CABINETID = -1"; expected "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"; SQL statement:
+SELECT FROM CABINETS WHERE CABINETID = -1 [42001-199]
+2019-05-01 17:02:42 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Keine Daten verfügbar
+No data is available [2000-199]
+2019-05-01 17:02:42 jdbc[6]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Keine Daten verfügbar
+No data is available [2000-199]
+2019-05-01 17:02:42 jdbc[10]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SELECT FROM CABINETS WHERE[*] CABINETID = -1"; erwartet "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"
+Syntax error in SQL statement "SELECT FROM CABINETS WHERE[*] CABINETID = -1"; expected "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"; SQL statement:
+SELECT FROM CABINETS WHERE CABINETID = -1 [42001-199]
+2019-05-01 17:20:46 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Keine Daten verfügbar
+No data is available [2000-199]
+2019-05-01 17:20:46 jdbc[6]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Keine Daten verfügbar
+No data is available [2000-199]
+2019-05-01 17:20:46 jdbc[10]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SELECT FROM CABINETS WHERE[*] CABINETID = -1"; erwartet "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"
+Syntax error in SQL statement "SELECT FROM CABINETS WHERE[*] CABINETID = -1"; expected "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"; SQL statement:
+SELECT FROM CABINETS WHERE CABINETID = -1 [42001-199]
+2019-05-01 17:24:59 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Keine Daten verfügbar
+No data is available [2000-199]
+2019-05-01 17:24:59 jdbc[6]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: Keine Daten verfügbar
+No data is available [2000-199]
+2019-05-01 17:24:59 jdbc[10]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SELECT FROM CABINETS WHERE[*] CABINETID = -1"; erwartet "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"
+Syntax error in SQL statement "SELECT FROM CABINETS WHERE[*] CABINETID = -1"; expected "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"; SQL statement:
+SELECT FROM CABINETS WHERE CABINETID = -1 [42001-199]
+2019-05-01 17:24:59 jdbc[11]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SELECT FROM DEVICES WHERE[*] DEVICEID = -1"; erwartet "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"
+Syntax error in SQL statement "SELECT FROM DEVICES WHERE[*] DEVICEID = -1"; expected "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"; SQL statement:
+SELECT FROM DEVICES WHERE DEVICEID = -1 [42001-199]
+2019-05-01 17:26:28 jdbc[7]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SELECT FROM CABINETS WHERE[*] CABINETID = -1"; erwartet "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"
+Syntax error in SQL statement "SELECT FROM CABINETS WHERE[*] CABINETID = -1"; expected "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"; SQL statement:
+SELECT FROM CABINETS WHERE CABINETID = -1 [42001-199]
+2019-05-01 17:26:28 jdbc[8]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SELECT FROM DEVICES WHERE[*] DEVICEID = -1"; erwartet "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"
+Syntax error in SQL statement "SELECT FROM DEVICES WHERE[*] DEVICEID = -1"; expected "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"; SQL statement:
+SELECT FROM DEVICES WHERE DEVICEID = -1 [42001-199]
+2019-05-01 17:28:08 jdbc[7]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SELECT FROM CABINETS WHERE[*] CABINETID = -1"; erwartet "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"
+Syntax error in SQL statement "SELECT FROM CABINETS WHERE[*] CABINETID = -1"; expected "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"; SQL statement:
+SELECT FROM CABINETS WHERE CABINETID = -1 [42001-199]
+2019-05-01 17:28:08 jdbc[8]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SELECT FROM DEVICES WHERE[*] DEVICEID = -1"; erwartet "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"
+Syntax error in SQL statement "SELECT FROM DEVICES WHERE[*] DEVICEID = -1"; expected "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"; SQL statement:
+SELECT FROM DEVICES WHERE DEVICEID = -1 [42001-199]
+2019-05-01 17:30:25 jdbc[8]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SELECT FROM DEVICES WHERE[*] DEVICEID = -1"; erwartet "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"
+Syntax error in SQL statement "SELECT FROM DEVICES WHERE[*] DEVICEID = -1"; expected "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"; SQL statement:
+SELECT FROM DEVICES WHERE DEVICEID = -1 [42001-199]
+2019-05-01 17:35:36 jdbc[8]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SELECT FROM DEVICES WHERE[*] DEVICEID = -1"; erwartet "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"
+Syntax error in SQL statement "SELECT FROM DEVICES WHERE[*] DEVICEID = -1"; expected "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"; SQL statement:
+SELECT FROM DEVICES WHERE DEVICEID = -1 [42001-199]
+2019-05-01 17:35:36 jdbc[9]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SELECT FROM DEVICES WHERE[*] DEVICEID = 0"; erwartet "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"
+Syntax error in SQL statement "SELECT FROM DEVICES WHERE[*] DEVICEID = 0"; expected "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"; SQL statement:
+SELECT FROM DEVICES WHERE DEVICEID = 0 [42001-199]
+2019-05-01 17:35:36 jdbc[10]: exception
+org.h2.jdbc.JdbcSQLSyntaxErrorException: Syntax Fehler in SQL Befehl "SELECT FROM DEVICES WHERE[*] DEVICEID = 0"; erwartet "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"
+Syntax error in SQL statement "SELECT FROM DEVICES WHERE[*] DEVICEID = 0"; expected "., (, USE, AS, RIGHT, LEFT, FULL, INNER, JOIN, CROSS, NATURAL, ,, SELECT"; SQL statement:
+SELECT FROM DEVICES WHERE DEVICEID = 0 [42001-199]

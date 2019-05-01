@@ -16,18 +16,30 @@ public class PositioningSystem {
 			int cabinetHeight;
 			int deviceXPosition;
 			int deviceYPosition;
-			int[] firstPosition = {-1, -1};
-			int[] secondPosition = {-1, -1};
+			int[] firstPosition = { -1, -1 };
+			int[] secondPosition = { -1, -1 };
 
 			// Get Height and Width of Cabinet
 			Statement m_Statement;
 			m_Statement = conn.createStatement();
 			String query = "SELECT HEIGHT, WIDTH FROM CABINETS WHERE CABINETID = " + cabinetId;
 			ResultSet m_ResultSet = m_Statement.executeQuery(query);
-			m_ResultSet.next();
-			cabinetHeight = Integer.parseInt(m_ResultSet.getString(1));
-			cabinetWidth = Integer.parseInt(m_ResultSet.getString(2));
-
+			if (m_ResultSet.next()) {
+				cabinetHeight = Integer.parseInt(m_ResultSet.getString(1));
+				cabinetWidth = Integer.parseInt(m_ResultSet.getString(2));
+			}
+			else {
+				System.out.println("No Cabinet with that ID found.");
+				return null;
+			}
+			if(cabinetHeight < newdeviceHeight || cabinetWidth < newdeviceWidth) {
+				System.out.println("Device cannot fit into this Cabinet!");
+				return null;
+			}
+			if(newdeviceHeight < 1 || newdeviceHeight > 30 || newdeviceWidth < 1 || newdeviceWidth > 30) {
+				System.out.println("Invalid Device proportions.");
+				return null;
+			}
 			int[][] cabinetSlots = new int[cabinetHeight][cabinetWidth];
 			for (int row[] : cabinetSlots)
 				Arrays.fill(row, 0);
@@ -92,23 +104,22 @@ public class PositioningSystem {
 				System.out.println("2. Position 2: {" + secondPosition[0] + " " + secondPosition[1] + "}");
 				System.out.println("3. Abort");
 				int n = reader.nextInt();
-				switch(n) {
+				switch (n) {
 				case 1:
 					System.out.println("Inserting at Position 1");
 					return firstPosition;
-				case 2: 
+				case 2:
 					System.out.println("Inserting at Position 2");
 					return secondPosition;
-				case 3: 
+				case 3:
 					return null;
-				default: System.out.println("Choose number 1 to 3.");
+				default:
+					System.out.println("Choose number 1 to 3.");
 				}
-			}
-			else if(firstPosition[0] != -1) {
+			} else if (firstPosition[0] != -1) {
 				System.out.println("Inserting at Position 1");
 				return firstPosition;
-			}
-			else if(secondPosition[0] != -1) {
+			} else if (secondPosition[0] != -1) {
 				System.out.println("Inserting at Position 2");
 				return secondPosition;
 			}

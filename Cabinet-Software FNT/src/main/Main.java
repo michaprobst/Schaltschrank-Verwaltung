@@ -12,6 +12,11 @@ public class Main {
 	public static int createDevice(Connection conn, int height, int width, int cabinetId) {
 		// Create new Device
 		try {
+			if (height < 1 || height > 30 || width < 1 || width > 30) {
+				System.out.println("Invalid Device proportions.");
+				System.out.println("Height must be between 1 and 30");
+				System.out.println("Width must be between 1 and 30");
+			}
 			Statement m_Statement = conn.createStatement();
 			// Check for valid Position in Cabinet
 			int[] position = PositioningSystem.findPosition(conn, cabinetId, height, width);
@@ -39,7 +44,9 @@ public class Main {
 	public static int createCabinet(Connection conn, int height, int width) {
 		// Create new Cabinet
 		if (height < 1 || height > 50 || width < 1 || width > 30) {
-			System.out.println("Invalid Cabinet proportions");
+			System.out.println("Invalid Cabinet proportions:");
+			System.out.println("Height must be between 1 and 50");
+			System.out.println("Width must be between 1 and 30");
 		} else {
 			try {
 				String query = "INSERT INTO CABINETS (HEIGHT, WIDTH) VALUES (" + height + ", " + width + ")";
@@ -62,11 +69,11 @@ public class Main {
 	public static boolean deleteCabinet(Connection conn, int cabinetId) {
 		// Delete Cabinet from List
 		try {
-			//Check if CabinetId exists
+			// Check if CabinetId exists
 			String query = "SELECT * FROM CABINETS WHERE CABINETID = " + cabinetId;
 			Statement m_Statement = conn.createStatement();
 			ResultSet m_ResultSet = m_Statement.executeQuery(query);
-			if(m_ResultSet.next() == false) {
+			if (m_ResultSet.next() == false) {
 				System.out.println("Cabinet with ID " + cabinetId + " does not exist.");
 				return false;
 			}
@@ -87,11 +94,11 @@ public class Main {
 
 	public static boolean deleteDevice(Connection conn, int deviceId) {
 		try {
-			//Check if device exists
+			// Check if device exists
 			String query = "SELECT FROM DEVICES WHERE DEVICEID = " + deviceId;
 			Statement m_Statement = conn.createStatement();
 			ResultSet m_ResultSet = m_Statement.executeQuery(query);
-			if(m_ResultSet.next() == false) {
+			if (m_ResultSet.next() == false) {
 				System.out.println("Device with ID " + deviceId + " does not exist.");
 				return false;
 			}
@@ -182,7 +189,7 @@ public class Main {
 							}
 						}
 					} while (m_ResultSet.next());
-					
+
 					// Print current diagramm of devices
 					System.out.println("Current positions of devices:");
 					for (int row = 0; row < cabinetHeight; row++) {
@@ -230,31 +237,42 @@ public class Main {
 				switch (n) {
 				case 1:
 					System.out.println("Creating new Cabinet");
-					System.out.println("Insert Height");
+					System.out.println("Insert Height or 0 to abort");
 					height = reader.nextInt();
-					System.out.println("Insert Width");
+					if(height == 0) {
+						break;
+					}
+					System.out.println("Insert Width or 0 to abort");
 					width = reader.nextInt();
+					if(width == 0) {
+						break;
+					}
 					createCabinet(conn, height, width);
 					break;
 				case 2:
 					System.out.println("Creating new Device");
-					System.out.println("Insert Height");
+					System.out.println("Insert Height or 0 to abort");
 					height = reader.nextInt();
-					System.out.println("Insert Width");
+					if(height == 0) {
+						break;
+					}
+					System.out.println("Insert Width or 0 to abort");
 					width = reader.nextInt();
-					
+					if(width == 0) {
+						break;
+					}
 					System.out.println("Insert CabinetId");
 					int cabinetId = reader.nextInt();
 					System.out.println("Creating device...");
 					createDevice(conn, height, width, cabinetId);
 					break;
 				case 3:
-					System.out.println("Enter Id of Cabinet you wish to delete:");
+					System.out.println("Enter Id of Cabinet you wish to delete or 0 to abort:");
 					cabinetId = reader.nextInt();
 					deleteCabinet(conn, cabinetId);
 					break;
 				case 4:
-					System.out.println("Enter Id of Device you wish to delete:");
+					System.out.println("Enter Id of Device you wish to delete or 0 to abort:");
 					int deviceId = reader.nextInt();
 					deleteDevice(conn, deviceId);
 					break;
@@ -263,7 +281,7 @@ public class Main {
 					getCabinets(conn);
 					break;
 				case 6:
-					System.out.println("Enter CabinetId");
+					System.out.println("Enter CabinetId or 0 to abort:");
 					cabinetId = reader.nextInt();
 					cabinetDetail(conn, cabinetId);
 					break;

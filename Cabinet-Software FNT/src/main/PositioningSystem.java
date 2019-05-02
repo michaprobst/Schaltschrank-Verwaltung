@@ -36,10 +36,6 @@ public class PositioningSystem {
 				System.out.println("Device cannot fit into this Cabinet!");
 				return null;
 			}
-			if(newdeviceHeight < 1 || newdeviceHeight > 30 || newdeviceWidth < 1 || newdeviceWidth > 30) {
-				System.out.println("Invalid Device proportions.");
-				return null;
-			}
 			int[][] cabinetSlots = new int[cabinetHeight][cabinetWidth];
 			for (int row[] : cabinetSlots)
 				Arrays.fill(row, 0);
